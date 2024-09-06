@@ -11,6 +11,7 @@ import {
     getSortedRowModel,
     ColumnFiltersState,
     getFilteredRowModel,
+    VisibilityState,
 } from "@tanstack/react-table"
 
 import {
@@ -32,6 +33,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
@@ -50,6 +58,7 @@ export function DataTable<TData, TValue>({
         []
     )
     const [currentStatus, setCurrentStatus] = useState('all')
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
 
     const table = useReactTable({
         data,
@@ -60,9 +69,11 @@ export function DataTable<TData, TValue>({
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
         state: {
             sorting,
             columnFilters,
+            columnVisibility,
         },
     })
 
@@ -80,6 +91,7 @@ export function DataTable<TData, TValue>({
                     }
                     className="max-w-sm"
                 />
+
                 <Select
                     value={currentStatus}
                     onValueChange={(value) => {
@@ -92,7 +104,7 @@ export function DataTable<TData, TValue>({
                         table.getColumn('status')?.setFilterValue(value);
                     }}
                 >
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-[180px] ml-2">
                         <SelectValue placeholder="Status - all" />
                     </SelectTrigger>
                     <SelectContent>
@@ -106,6 +118,33 @@ export function DataTable<TData, TValue>({
                         </SelectGroup>
                     </SelectContent>
                 </Select>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="ml-auto">
+                            Columns
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {table
+                            .getAllColumns()
+                            .filter((column) => column.getCanHide())
+                            .filter((column) => column.id !== 'actions')
+                            .map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(!!value)
+                                        }
+                                    >
+                                        {column.id}
+                                    </DropdownMenuCheckboxItem>
+                                )
+                            })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <div className="rounded-md border">
                 <Table>

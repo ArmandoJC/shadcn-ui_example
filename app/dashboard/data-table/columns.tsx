@@ -42,7 +42,7 @@ export const columns: ColumnDef<Payment>[] = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    <div className="text-right">Amount</div>
+                    Client Name
                     <SortedIcon isSorted={column.getIsSorted()} />
                 </Button>
             )
