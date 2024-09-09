@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Payment } from "@/data/payments.data"
-import { ColumnDef, SortDirection } from "@tanstack/react-table"
+import { ColumnDef, FilterFn, Row, SortDirection } from "@tanstack/react-table"
 
 
 import { ArrowUpDown, MoreHorizontal, ArrowUp, ArrowDown } from "lucide-react"
@@ -21,6 +21,29 @@ import { toast } from "sonner"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
+
+const myCustomFilterFn: FilterFn<Payment> = (
+    row: Row<Payment>,
+    columnId: string,
+    filterValue: string,
+    addMeta: (meta: any) => void
+) => {
+    filterValue = filterValue.toLowerCase();
+
+    if (row.original.email.includes(filterValue)) {
+        return true
+    }
+
+    if (row.original.clientName.includes(filterValue)) {
+        return true
+    }
+
+    if (row.original.status.includes(filterValue)) {
+        return true
+    }
+    return false;
+}
+
 
 const SortedIcon = ({ isSorted }: { isSorted: SortDirection | false }) => {
     if (isSorted === 'asc') {
@@ -73,6 +96,7 @@ export const columns: ColumnDef<Payment>[] = [
     },
     {
         accessorKey: "email",
+        filterFn: myCustomFilterFn,
         header: ({ column }) => {
             return (
                 <Button

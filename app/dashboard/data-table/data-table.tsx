@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
         <>
             <div className="flex justify-between items-center py-4">
                 <Input
-                    placeholder="Filter emails..."
+                    placeholder="Filter anything... (clientName, email, status)"
                     value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
                     onChange={(event) => {
                         setCurrentStatus('all');
