@@ -29,19 +29,10 @@ const myCustomFilterFn: FilterFn<Payment> = (
     addMeta: (meta: any) => void
 ) => {
     filterValue = filterValue.toLowerCase();
+    const filterParts = filterValue.split(" ");
+    const rowValues = `${row.original.email} ${row.original.clientName} ${row.original.status}`.toLowerCase();
 
-    if (row.original.email.includes(filterValue)) {
-        return true
-    }
-
-    if (row.original.clientName.includes(filterValue)) {
-        return true
-    }
-
-    if (row.original.status.includes(filterValue)) {
-        return true
-    }
-    return false;
+    return filterParts.every((part) => rowValues.includes(part))
 }
 
 
